@@ -42,6 +42,9 @@ font-size:12px;
 font-weight:600;
 text-align:center;
 }
+  </style>
+  
+  <style type="text/css">
 .btn-55,
 .btn-55 *,
 .btn-55 :after,
@@ -417,12 +420,50 @@ text-align:center;
   opacity: 1;
   transition: transform 0.02s linear 0.06s;
 }
+  </style>
+  
+  <style type="text/css">
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto";
+  font-weight: 100;
+}
 
+body {
+  font-size: 18px;
+  color: hsla(210deg, 100%, 100%, 1);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes breath {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  background-color: hsla(240deg, 20%, 20%, 1);
+  z-index: -1;
+}
   </style>
 
   <body>
 	<center>
-		
+		<canvas id="lines"></canvas>
       <h2 id="欢迎访问-zgq-inc-的个人主页">欢迎访问 ZGQ Inc. 的个人主页</h2>
 <h1>请选择主页分流地址</h1>
 
