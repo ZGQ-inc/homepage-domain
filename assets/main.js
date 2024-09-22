@@ -1,24 +1,23 @@
-// <!-- Mouse Follow Clock 3 from Rainbow Arch -->
-// <!-- This script and many more from : -->
-// <!-- rainbow.arch.scriptmania.com -->
+// Mouse Follow Clock 3 from Rainbow Arch
+// This script and many more from :
+// rainbow.arch.scriptmania.com
 
-// <!-- Mouse Follow Clock 3 from http://rainbow.arch.scriptmania.com
+// Mouse Follow Clock 3 from http://rainbow.arch.scriptmania.com
 // //Hide from older browsers 
 // if (document.getElementById&&!document.layers){
-// -->
 
-// <!--Clock colours-->
+// Clock colours
 dCol = '#fff'; //date colour.
 fCol = '#fff'; //face colour.
 sCol = '#fff'; //seconds colour.
 mCol = '#fff'; //minutes colour.
 hCol = '#fff'; //hours colour.
 
-// <!--Controls-->
+// Controls
 del = 0.75; //Follow mouse speed.
 ref = 30; //Run speed (timeout).
 
-// <!--Alter nothing below! Alignments will be lost! -->
+// Alter nothing below! Alignments will be lost!
 var ieType = (typeof window.innerWidth != 'number');
 var docComp = (document.compatMode);
 var docMod = (docComp && docComp.indexOf("CSS") != -1);
