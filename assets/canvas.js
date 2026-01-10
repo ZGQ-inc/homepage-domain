@@ -66,7 +66,7 @@
 
     function draw() {
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         ctx.fillRect(0, 0, width, height);
 
         ctx.globalCompositeOperation = 'source-over';
