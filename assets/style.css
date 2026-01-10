@@ -69,6 +69,10 @@ canvas#lines {
   transition: opacity 1s ease;
   color-scheme: light dark;
   forced-color-adjust: none;
+  filter: none !important; 
+  background-color: var(--md-sys-color-background);
+  mix-blend-mode: normal;
+  isolation: isolate;
 }
 
 .clock-char {
