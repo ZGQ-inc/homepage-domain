@@ -16,7 +16,6 @@
     --md-sys-color-on-surface: #1a1c1e;
     --md-sys-color-on-surface-variant: #43474e;
     --clock-text-color: #1a1c1e;
-    --clock-hand-color: #0061a4;
   }
 }
 
@@ -32,7 +31,6 @@
     --md-sys-color-on-surface: #e2e2e6;
     --md-sys-color-on-surface-variant: #c4c6cf;
     --clock-text-color: #ffffff;
-    --clock-hand-color: #9ecaff;
   }
 }
 
@@ -59,20 +57,19 @@ body {
 }
 
 canvas#lines {
-position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; 
+  z-index: -1;
   pointer-events: none;
   opacity: 0;
   transition: opacity 2s ease;
+  background-color: transparent !important;
   color-scheme: light dark;
-  forced-color-adjust: none;
-  background: transparent !important;
-  filter: brightness(100%) !important;
-  transform: translateZ(0);
+  filter: none !important;
+  mix-blend-mode: normal;
 }
 
 .clock-char {

@@ -15,12 +15,10 @@
 
         if (isDarkMode) {
             colorConfig = {
-                bg: 'rgba(26, 28, 30, 0.4)',
                 cell: '#9ecaff'
             };
         } else {
             colorConfig = {
-                bg: 'rgba(253, 252, 255, 0.4)',
                 cell: '#0061a4'
             };
         }
@@ -67,17 +65,18 @@
     }
 
     function draw() {
-        ctx.fillStyle = colorConfig.bg;
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         ctx.fillRect(0, 0, width, height);
 
+        ctx.globalCompositeOperation = 'source-over';
         ctx.fillStyle = colorConfig.cell;
 
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
-                let x = i * resolution;
-                let y = j * resolution;
-
                 if (grid[i][j] === 1) {
+                    let x = i * resolution;
+                    let y = j * resolution;
                     ctx.beginPath();
                     ctx.rect(x, y, resolution - 1, resolution - 1);
                     ctx.fill();
@@ -159,10 +158,7 @@
     loop();
 
     setTimeout(() => {
-        const target = document.getElementById("canvas-layer") || document.getElementById("lines");
-        if (target) {
-            target.style.opacity = "0.99";
-        }
+        canvas.style.opacity = 1;
     }, 1000);
 
 })();
