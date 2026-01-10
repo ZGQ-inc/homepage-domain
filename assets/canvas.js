@@ -159,9 +159,10 @@
     loop();
 
     setTimeout(() => {
-        const layer = document.getElementById("canvas-layer");
-        if (layer) {
-            layer.style.opacity = 1;
+        const target = document.getElementById("canvas-layer") || document.getElementById("lines");
+        if (target) {
+            target.style.opacity = "0.99";
         }
     }, 1000);
+
 })();
