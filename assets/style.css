@@ -67,6 +67,8 @@ canvas#lines {
   pointer-events: none;
   opacity: 0;
   transition: opacity 1s ease;
+  color-scheme: light dark;
+  forced-color-adjust: none;
 }
 
 .clock-char {
