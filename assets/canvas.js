@@ -159,7 +159,9 @@
     loop();
 
     setTimeout(() => {
-        canvas.style.opacity = 1;
+        const layer = document.getElementById("canvas-layer");
+        if (layer) {
+            layer.style.opacity = 1;
+        }
     }, 1000);
-
 })();

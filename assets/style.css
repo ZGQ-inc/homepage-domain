@@ -57,7 +57,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-canvas#lines {
+#canvas-layer {
   position: fixed;
   top: 0;
   left: 0;
@@ -69,10 +69,20 @@ canvas#lines {
   transition: opacity 1s ease;
   color-scheme: light dark;
   forced-color-adjust: none;
-  filter: none !important; 
   background-color: var(--md-sys-color-background);
-  mix-blend-mode: normal;
+  background-image: linear-gradient(transparent, transparent);
+  filter: none !important;
   isolation: isolate;
+  transform: translateZ(0); 
+}
+
+canvas#lines {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent !important; 
+  filter: none !important;
+  mix-blend-mode: normal;
 }
 
 .clock-char {
