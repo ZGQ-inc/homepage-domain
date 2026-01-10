@@ -1,276 +1,165 @@
-(function() {
+(function () {
     const canvas = document.getElementById("lines");
     const ctx = canvas.getContext("2d");
-    let width;
-    let height;
-    class Line {
-      constructor(origin, size, length, color, style = "pattern") {
-        this.size = size;
-        this.origin = origin;
-        this.length = length;
-        this.color = color;
-        this.style = style;
-        this.origin = `M${origin.x},${origin.y}`;
-        this.offSet = 0;
-        this.line = null;
-        this.offSetSpeed = length / size;
-      }
-      getColorString() {
-        return `hsla(${this.color.h}deg,${this.color.s}%,${this.color.l}%,${this.color.a})`;
-      }
-      generators() {
-        return [{
-            line: `h${this.size}`,
-            mag: this.size
-          },
-          {
-            line: `h-${this.size}`,
-            mag: this.size
-          },
-          {
-            line: `v${this.size}`,
-            mag: this.size
-          },
-          {
-            line: `v-${this.size}`,
-            mag: this.size
-          },
-          {
-            line: `l${this.size},${this.size}`,
-            mag: Math.hypot(this.size, this.size)
-          },
-          {
-            line: `l${this.size}-${this.size}`,
-            mag: Math.hypot(this.size, this.size)
-          },
-          {
-            line: `l-${this.size},${this.size}`,
-            mag: Math.hypot(this.size, this.size)
-          },
-          {
-            line: `l-${this.size}-${this.size}`,
-            mag: Math.hypot(this.size, this.size)
-          }
-        ];
-      }
-      generate() {
-        let segments = this.generators(this.size);
-        let path = this.origin;
-        let mag = 0;
-        let fragment;
-        let i;
-        for (i = 0; i < this.length; i += 1) {
-          fragment = segments[(Math.random() * segments.length) | 0];
-          path += ` ${fragment.line}`;
-          mag += fragment.mag;
+
+    let width, height;
+    let cols, rows;
+    const resolution = 8;
+    let grid;
+    let nextGrid;
+    let animationId;
+    let colorConfig = {};
+
+    function updateColors() {
+        const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (isDarkMode) {
+            colorConfig = {
+                bg: 'rgba(26, 28, 30, 0.4)',
+                cell: '#9ecaff'
+            };
+        } else {
+            colorConfig = {
+                bg: 'rgba(253, 252, 255, 0.4)',
+                cell: '#0061a4'
+            };
         }
-        this.line = {
-          path,
-          mag
-        };
-        return this;
-      }
-      renderStyle(style) {
-        if (style === "glitches") {
-          ctx.lineDashOffset = this.line.mag + this.offSet;
-          ctx.setLineDash([
-            this.size ** 1.5,
-            (this.line.mag / this.length) * this.size ** 2
-          ]);
-          this.offSet += 20;
-          // this.size / (this.size ** 2);
-          ctx.lineWidth = 2;
-          return this;
-        }
-        if (style === "pattern") {
-          ctx.lineDashOffset = this.line.mag - this.offSet;
-          ctx.setLineDash([this.line.mag, this.line.mag]);
-          this.offSet += 10;
-          //this.size / (this.size ** 100);
-          ctx.lineWidth = 0.2;
-        }
-      }
-      mutatePath() {
-        let lineFragment = this.line.path.split(" ").slice(1);
-        let generator = this.generators();
-        lineFragment[(Math.random() * lineFragment.length) | 0] =
-          generator[(Math.random() * generator.length) | 0].line;
-        this.line.path = `${this.line.path.split(" ")[0]} ${lineFragment.join(
-          " "
-        )}`;
-      }
-      draw() {
-        !this.line && this.generate();
-  
-        ctx.strokeStyle = this.getColorString();
-        this.renderStyle(this.style);
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.stroke(new Path2D(this.line.path));
-        return this;
-      }
     }
-  
-    function clear() {
-      ctx.fillStyle = `hsla(200deg, 20%, 10%, 0.3)`;
-      ctx.fillRect(0, 0, width, height);
-    }
-  
-    function generateLines(amount) {
-      let lines = [];
-      let styles = [{
-          size: 1.25,
-          style: "pattern",
-          color: {
-            h: 210,
-            s: 100,
-            l: 70,
-            a: 0.5
-          }
-        },
-        {
-          size: 2.5,
-          style: "pattern",
-          color: {
-            h: 190,
-            s: 90,
-            l: 50,
-            a: 0.3
-          }
-        },
-        {
-          size: 5,
-          style: "pattern",
-          color: {
-            h: 210,
-            s: 70,
-            l: 60,
-            a: 0.2
-          }
-        },
-        {
-          size: 10,
-          style: "pattern",
-          color: {
-            h: 310,
-            s: 80,
-            l: 55,
-            a: 0.15
-          }
-        },
-        {
-          size: 20,
-          style: "pattern",
-          color: {
-            h: 200,
-            s: 25,
-            l: 35,
-            a: 0.12
-          }
-        },
-        {
-          size: 20,
-          style: "pattern",
-          color: {
-            h: 210,
-            s: 20,
-            l: 40,
-            a: 0.12
-          }
-        },
-        {
-          size: 40,
-          style: "pattern",
-          color: {
-            h: 190,
-            s: 40,
-            l: 50,
-            a: 0.12
-          }
-        },
-        {
-          size: 80,
-          style: "pattern",
-          color: {
-            h: 220,
-            s: 50,
-            l: 60,
-            a: 0.12
-          }
-        },
-        {
-          size: 40,
-          style: "glitches",
-          color: {
-            h: 300,
-            s: 100,
-            l: 50,
-            a: 0.3
-          }
-        },
-        {
-          size: 20,
-          style: "glitches",
-          color: {
-            h: 210,
-            s: 100,
-            l: 50,
-            a: 0.3
-          }
-        },
-        {
-          size: 60,
-          style: "glitches",
-          color: {
-            h: 30,
-            s: 100,
-            l: 50,
-            a: 0.3
-          }
+
+    function make2DArray(cols, rows) {
+        let arr = new Array(cols);
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = new Array(rows);
         }
-      ];
-      for (let i = 0; i < amount; i += 1) {
-        let style = styles[(Math.random() ** 2 * styles.length) | 0];
-        lines.push(
-          new Line({
-              x: width * 0.5,
-              y: height * 0.5
-            },
-            style.size,
-            500 + Math.random() * 1000,
-            style.color,
-            style.style
-          )
-        );
-      }
-      return lines;
+        return arr;
     }
-    let id;
-  
-    function resize() {
-      id = cancelAnimationFrame(id);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      const lines = generateLines(40);
-  
-      function update() {
-        if (!(id % 3)) {
-          clear();
-          lines.forEach((line) => {
-            line.draw();
-            if (!(id % 5) && Math.random() > 0.95) {
-              line.mutatePath();
+
+    function initGrid() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        cols = Math.ceil(width / resolution);
+        rows = Math.ceil(height / resolution);
+
+        grid = make2DArray(cols, rows);
+        nextGrid = make2DArray(cols, rows);
+
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+                grid[i][j] = Math.random() < 0.08 ? 1 : 0;
             }
-          });
         }
-        id = requestAnimationFrame(update);
-      }
-      id = requestAnimationFrame(update);
     }
-    window.addEventListener("resize", resize, {
-      passive: true
+
+    function countNeighbors(grid, x, y) {
+        let sum = 0;
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++) {
+                let col = (x + i + cols) % cols;
+                let row = (y + j + rows) % rows;
+                sum += grid[col][row];
+            }
+        }
+        sum -= grid[x][y];
+        return sum;
+    }
+
+    function draw() {
+        ctx.fillStyle = colorConfig.bg;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = colorConfig.cell;
+
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+                let x = i * resolution;
+                let y = j * resolution;
+
+                if (grid[i][j] === 1) {
+                    ctx.beginPath();
+                    ctx.rect(x, y, resolution - 1, resolution - 1);
+                    ctx.fill();
+                }
+            }
+        }
+
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+                let state = grid[i][j];
+                let neighbors = countNeighbors(grid, i, j);
+
+                if (state === 0 && neighbors === 3) {
+                    nextGrid[i][j] = 1;
+                } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+                    nextGrid[i][j] = 0;
+                } else {
+                    nextGrid[i][j] = state;
+                }
+            }
+        }
+
+        let temp = grid;
+        grid = nextGrid;
+        nextGrid = temp;
+    }
+
+    function loop() {
+        draw();
+        setTimeout(() => {
+            animationId = requestAnimationFrame(loop);
+        }, 50);
+    }
+
+    function addLifeAt(x, y) {
+        if (!grid) return;
+
+        let col = Math.floor(x / resolution);
+        let row = Math.floor(y / resolution);
+
+        if (col >= 0 && col < cols && row >= 0 && row < rows) {
+            let extent = 1;
+            for (let i = -extent; i <= extent; i++) {
+                for (let j = -extent; j <= extent; j++) {
+                    let c = (col + i + cols) % cols;
+                    let r = (row + j + rows) % rows;
+                    if (Math.random() > 0.5) {
+                        grid[c][r] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    window.addEventListener('mousemove', (e) => {
+        addLifeAt(e.clientX, e.clientY);
     });
-    resize();
-  })();
+
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+            addLifeAt(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+        cancelAnimationFrame(animationId);
+        initGrid();
+        loop();
+    });
+
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            updateColors();
+        });
+    }
+
+    updateColors();
+    initGrid();
+    loop();
+
+    setTimeout(() => {
+        canvas.style.opacity = 1;
+    }, 1000);
+
+})();

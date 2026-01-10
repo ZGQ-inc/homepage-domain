@@ -1,31 +1,39 @@
-/* =========================================
-   1. 基础设置 & MD3 变量定义
-   ========================================= */
 :root {
-  /* MD3 Dark Theme Colors (基于深蓝/紫罗兰色系) */
-  --md-sys-color-background: #000000;
-  --md-sys-color-surface: #141218;
-  --md-sys-color-surface-variant: #49454f;
-  --md-sys-color-primary: #d0bcff;
-  --md-sys-color-on-primary: #381e72;
-  --md-sys-color-primary-container: #4f378b;
-  --md-sys-color-on-primary-container: #eaddff;
-  --md-sys-color-secondary-container: #4a4458;
-  --md-sys-color-on-secondary-container: #e8def8;
-  --md-sys-color-outline: #938f99;
-  --md-sys-color-on-surface: #e6e1e5;
-  --md-sys-color-on-surface-variant: #cac4d0;
-  
-  /* 阴影与圆角 */
-  --md-sys-elevation-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --md-sys-elevation-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
   --md-sys-shape-corner-extra-large: 28px;
   --md-sys-shape-corner-full: 9999px;
-  
-  /* 字体 */
-  --md-sys-typescale-label-large-font: 'Roboto', sans-serif;
-  --md-sys-typescale-label-large-weight: 500;
-  --md-sys-typescale-label-large-size: 14px;
+  --md-sys-elevation-2: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --md-sys-color-background: #fdfcff;
+    --md-sys-color-surface-dim: rgba(255, 255, 255, 0.75);
+    --md-sys-color-primary: #0061a4;
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-secondary-container: #d1e4ff;
+    --md-sys-color-on-secondary-container: #001d36;
+    --md-sys-color-outline: #74777f;
+    --md-sys-color-on-surface: #1a1c1e;
+    --md-sys-color-on-surface-variant: #43474e;
+    --clock-text-color: #1a1c1e;
+    --clock-hand-color: #0061a4;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-sys-color-background: #1a1c1e;
+    --md-sys-color-surface-dim: rgba(26, 28, 30, 0.65);
+    --md-sys-color-primary: #9ecaff;
+    --md-sys-color-on-primary: #003258;
+    --md-sys-color-secondary-container: #20497d;
+    --md-sys-color-on-secondary-container: #d1e4ff;
+    --md-sys-color-outline: #8e9099;
+    --md-sys-color-on-surface: #e2e2e6;
+    --md-sys-color-on-surface-variant: #c4c6cf;
+    --clock-text-color: #ffffff;
+    --clock-hand-color: #9ecaff;
+  }
 }
 
 * {
@@ -45,73 +53,67 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
+  position: relative;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* =========================================
-   2. 保留组件 (Canvas & Clock)
-   ========================================= */
-/* 背景 Canvas */
 canvas#lines {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; /* 确保背景在最底层 */
-}
-
-/* Clock.js 所需样式 (不可删除，否则时钟失效) */
-.cursor1 {
-  position: absolute;
-  top: 8px;
-  left: 0px;
-  width: 20px;
-  height: 20px;
-  font-family: Arial, sans-serif;
-  font-size: 20px;
-  text-align: center;
-  font-weight: bold;
-  pointer-events: none; /* 防止遮挡点击 */
-  z-index: 1000;
-}
-
-.cursor2 {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 12px;
-  height: 12px;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
+  z-index: 0;
   pointer-events: none;
-  z-index: 1000;
+  opacity: 0;
+  transition: opacity 1s ease;
 }
 
-/* =========================================
-   3. 布局容器 (Glassmorphism Card)
-   ========================================= */
+.clock-char {
+  position: fixed;
+  top: 0;
+  left: 0;
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.clock-date {
+  font-size: 14px;
+  color: var(--clock-text-color);
+}
+
+.clock-face {
+  font-size: 12px;
+  color: var(--md-sys-color-primary);
+}
+
+.clock-time {
+  font-size: 16px;
+  color: var(--clock-text-color);
+}
+
 .container {
-  width: 100%;
-  max-width: 400px;
-  padding: 2rem;
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  
-  /* 磨砂玻璃效果 */
-  background: rgba(20, 18, 24, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--md-sys-color-surface-dim);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--md-sys-shape-corner-extra-large);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--md-sys-color-outline);
   box-shadow: var(--md-sys-elevation-2);
-  
-  /* 入场动画 */
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px);
   animation: fadeInUp 0.8s cubic-bezier(0.2, 0.0, 0, 1.0) forwards;
 }
 
@@ -122,94 +124,73 @@ canvas#lines {
   }
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
 .header h2 {
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: var(--md-sys-color-on-surface);
-  margin-top: 1rem;
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 
-/* 头像样式 (如果需要) */
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid var(--md-sys-color-primary);
-  margin-bottom: 0.5rem;
-  object-fit: cover;
-  box-shadow: 0 0 15px rgba(208, 188, 255, 0.3);
-}
-
-/* =========================================
-   4. MD3 按钮样式 (Button Styles)
-   ========================================= */
 .btn-group {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 12px; /* 按钮间距 */
+  gap: 14px;
 }
 
-/* 基础按钮结构 */
 .md3-btn {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 24px;
   width: 100%;
-  height: 48px; /* 移动端友好高度 */
-  padding: 0 24px;
+  height: 52px;
   border-radius: var(--md-sys-shape-corner-full);
   text-decoration: none;
-  font-family: var(--md-sys-typescale-label-large-font);
-  font-weight: var(--md-sys-typescale-label-large-weight);
-  font-size: var(--md-sys-typescale-label-large-size);
-  letter-spacing: 0.1px;
-  transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: transform 0.1s, box-shadow 0.2s, background-color 0.2s;
   overflow: hidden;
   cursor: pointer;
   border: none;
-  gap: 8px; /* 图标和文字的间距 */
+  gap: 16px;
 }
 
-/* 图标样式 (Material Symbols) */
-.md3-btn .material-symbols-outlined {
-  font-size: 18px;
+.md3-btn .material-symbols-outlined,
+.md3-btn .si {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* --- 样式变体 1: Filled Button (最高强调 - 个人主页) --- */
+.md3-btn .si {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
 .md3-btn-filled {
   background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
-  box-shadow: var(--md-sys-elevation-1);
-}
-
-.md3-btn-filled:hover {
-  box-shadow: var(--md-sys-elevation-2);
-  background-color: #e0cffc; /* 简单的 hover 亮色 */
 }
 
 .md3-btn-filled:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
-/* --- 样式变体 2: Tonal Button (中等强调 - Github/友情链接) --- */
 .md3-btn-tonal {
   background-color: var(--md-sys-color-secondary-container);
   color: var(--md-sys-color-on-secondary-container);
 }
 
-.md3-btn-tonal:hover {
-  background-color: #5d566d;
-  box-shadow: var(--md-sys-elevation-1);
+.md3-btn-tonal:active {
+  transform: scale(0.97);
 }
 
-/* --- 样式变体 3: Outlined Button (低强调 - 外部链接/TG) --- */
 .md3-btn-outlined {
   background-color: transparent;
   border: 1px solid var(--md-sys-color-outline);
@@ -217,24 +198,10 @@ canvas#lines {
 }
 
 .md3-btn-outlined:hover {
-  background-color: rgba(208, 188, 255, 0.08); /* Primary color with low opacity */
+  background-color: rgba(0, 97, 164, 0.08);
   border-color: var(--md-sys-color-primary);
 }
 
-/* --- 样式变体 4: Text Button (最低强调 - 页脚链接) --- */
-.md3-btn-text {
-  background-color: transparent;
-  color: var(--md-sys-color-on-surface-variant);
-  height: 36px;
-  font-size: 12px;
-}
-
-.md3-btn-text:hover {
-  color: var(--md-sys-color-primary);
-  background-color: rgba(208, 188, 255, 0.05);
-}
-
-/* 涟漪效果层 (Ripple) */
 .md3-btn::after {
   content: "";
   position: absolute;
@@ -242,34 +209,25 @@ canvas#lines {
   left: 50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
-  background-size: 0% 0%; /* 初始大小 */
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, transparent 10.01%);
+  background-size: 0% 0%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   opacity: 0;
-  transition: background-size 0.3s, opacity 0.3s;
+  transition: .3s;
   pointer-events: none;
 }
 
 .md3-btn:active::after {
-  background-size: 200% 200%;
+  background-size: 250% 250%;
   opacity: 1;
   transition: 0s;
 }
 
-/* =========================================
-   5. 页脚
-   ========================================= */
 footer {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   font-size: 0.75rem;
   color: var(--md-sys-color-on-surface-variant);
   text-align: center;
-  opacity: 0.7;
-}
-
-footer span {
-  display: block;
-  font-size: 0.7rem;
-  margin-top: 4px;
+  opacity: 0.8;
 }
