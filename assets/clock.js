@@ -54,8 +54,11 @@
     }
 
     function animate() {
-        zy[0] = Math.round(dy[0] += (mouseY - dy[0]) * del);
-        zx[0] = Math.round(dx[0] += (mouseX - dx[0]) * del);
+        const offsetX = 60;
+        const offsetY = 60;
+
+        zy[0] = Math.round(dy[0] += (mouseY + offsetY - dy[0]) * del);
+        zx[0] = Math.round(dx[0] += (mouseX + offsetX - dx[0]) * del);
 
         let totalElements = D.concat(F, H, M, S);
 
